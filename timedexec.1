@@ -1,0 +1,135 @@
+.TH TIMEDEXEC 1 "November 2025" "Version 1.0" "User Commands"
+
+.SH NAME
+timedexec \- execute a program with resource limits
+
+.SH SYNOPSIS
+.B timedexec
+[\fIOPTIONS\fR]
+.I COMMAND
+[\fIARGS\fR...]
+
+.SH DESCRIPTION
+.B timedexec
+executes a specified command while monitoring its resource usage.
+If the command exceeds any of the specified limits (time, memory, or CPU),
+it is forcefully terminated.
+
+This is useful for:
+.IP \(bu 2
+Testing programs that might run indefinitely
+.IP \(bu 2
+Limiting resource usage of untrusted code
+.IP \(bu 2
+Benchmarking and performance testing
+.IP \(bu 2
+Running tasks with guaranteed resource boundaries
+
+.SH OPTIONS
+.TP
+.BR \-t " \fISECONDS\fR"
+Set maximum execution time in seconds. If the command runs longer than
+this, it will be killed with SIGKILL.
+.TP
+.BR \-m " \fIMEGABYTES\fR"
+Set maximum memory usage in megabytes. If the command's resident set
+size (RSS) exceeds this limit, it will be killed.
+.TP
+.BR \-c " \fIPERCENT\fR"
+Set maximum CPU usage percentage (1-100). This is currently a simplified
+implementation and serves as a monitoring feature.
+.TP
+.BR \-v
+Enable verbose mode. Prints detailed information about monitoring,
+including current resource usage and limit checks.
+.TP
+.BR \-h
+Display usage information and exit.
+
+.SH EXIT STATUS
+The exit status of
+.B timedexec
+depends on how the monitored command terminated:
+.TP
+.B 0\-123
+The command's normal exit code
+.TP
+.B 124
+Command exceeded time limit
+.TP
+.B 125
+Command exceeded memory limit
+.TP
+.B 126
+Command cannot be executed
+.TP
+.B 127
+Command not found
+.TP
+.B 128+N
+Command killed by signal N
+
+.SH EXAMPLES
+.TP
+Execute a command with a 10-second time limit:
+.B timedexec -t 10 ./myprogram
+
+.TP
+Limit both time (5 seconds) and memory (100 MB):
+.B timedexec -t 5 -m 100 ./memory_intensive_app
+
+.TP
+Run with verbose output to see monitoring details:
+.B timedexec -v -t 30 -m 500 ./test_program arg1 arg2
+
+.TP
+Test a potentially infinite loop:
+.B timedexec -t 3 sh -c 'while true; do echo running; done'
+
+.SH IMPLEMENTATION DETAILS
+.B timedexec
+uses the following Linux system calls and features:
+.IP \(bu 2
+.BR fork (2)
+- Creates child process to run the command
+.IP \(bu 2
+.BR execvp (3)
+- Replaces child process with target command
+.IP \(bu 2
+.BR waitpid (2)
+- Monitors child process status
+.IP \(bu 2
+.BR kill (2)
+- Terminates process when limits exceeded
+.IP \(bu 2
+.I /proc
+filesystem - Reads process resource usage from
+.I /proc/[pid]/status
+and
+.I /proc/[pid]/stat
+
+Resource monitoring occurs every second. The child process is checked
+for completion and resource usage at each interval.
+
+.SH NOTES
+Memory monitoring uses the VmRSS (Resident Set Size) value from
+.IR /proc/[pid]/status ,
+which represents the amount of physical RAM currently used by the process.
+
+CPU percentage monitoring is simplified and may not accurately reflect
+instantaneous CPU usage in all scenarios.
+
+.SH BUGS
+CPU limit enforcement is not yet fully implemented - it currently only
+monitors and reports CPU usage but does not terminate processes based
+on CPU percentage.
+
+.SH AUTHOR
+Written for CSC 332 - Operating Systems course project.
+
+.SH SEE ALSO
+.BR timeout (1),
+.BR ulimit (1),
+.BR nice (1),
+.BR kill (1),
+.BR proc (5)
