@@ -1,0 +1,62 @@
+.TH LOGANALYZER 1 "November 2025" "CSC 332" "User Commands"
+.SH NAME
+loganalyzer \- analyze log files using mmap() and report statistics
+.SH SYNOPSIS
+.B loganalyzer
+\fB-f\fR \fILOGFILE\fR [\fB-k\fR \fIKEYWORD\fR] [\fB-l\fR] [\fB-h\fR]
+.SH DESCRIPTION
+The
+.B loganalyzer
+command analyzes a text log file and reports basic statistics. It uses
+the
+.BR mmap (2)
+system call to map the file into memory for efficient processing.
+
+By default it prints the total number of bytes and lines in the log file.
+If a keyword is specified, it also counts how many lines contain that keyword.
+When the \fB-l\fR option is used, it reports how many lines contain the
+strings "INFO", "WARN", and "ERROR".
+
+The program installs a handler for
+.BR SIGINT
+(Ctrl+C) and will stop analysis gracefully if interrupted by the user.
+
+.SH OPTIONS
+.TP
+\fB-f\fR \fILOGFILE\fR
+Path to the log file to analyze. This option is required.
+.TP
+\fB-k\fR \fIKEYWORD\fR
+Count lines that contain the specified keyword.
+.TP
+\fB-l\fR
+Count log levels by reporting how many lines contain "INFO", "WARN",
+and "ERROR".
+.TP
+\fB-h\fR
+Display a brief help message and exit.
+
+.SH EXAMPLES
+Analyze a log file and show basic statistics:
+.PP
+.nf
+loganalyzer -f /var/log/syslog
+.fi
+
+Count lines containing "ERROR":
+.PP
+.nf
+loganalyzer -f /var/log/syslog -k ERROR
+.fi
+
+Analyze a log file, count keyword "database", and show log level counts:
+.PP
+.nf
+loganalyzer -f app.log -k database -l
+.fi
+
+.SH EXIT STATUS
+The program exits with status 0 on success and a non-zero value on error.
+
+.SH AUTHOR
+Written by Lina Prroj for the CSC 332 group project.
