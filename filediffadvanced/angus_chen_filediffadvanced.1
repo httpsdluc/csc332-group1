@@ -1,17 +1,17 @@
 NAME
-     filediffadvanced – advanced file comparison tool with text and binary diff modes
+     angus_chen_filediffadvanced – advanced file comparison tool with text and binary diff modes
 
 SYNOPSIS
-     filediffadvanced [OPTIONS] FILE1 FILE2
+     angus_chen_filediffadvanced [OPTIONS] FILE1 FILE2
 
 DESCRIPTION
-     filediffadvanced is an advanced diff utility that compares two files
+     angus_chen_filediffadvanced is an advanced diff utility that compares two files
      either line-by-line (text mode) or byte-by-byte (binary mode).
      It supports automatic mode detection, detailed difference reporting,
      optional performance statistics, and output redirection.
 
-     The program efficiently handles large files by using mmap(2) when
-     available and provides graceful interruption handling via SIGINT.
+     The program efficiently handles large files using mmap(2) and provides
+     graceful interruption handling via SIGINT.
 
 OPTIONS
      -t, --text
@@ -30,8 +30,8 @@ OPTIONS
                 • throughput (MB/s)
 
      -o FILE, --output FILE
-            Write output to FILE instead of stdout. If no file is provided, 
-            the results will write to stdout by default.
+            Write output to FILE instead of stdout. If no file is provided,
+            results will be written to stdout by default.
 
      -h, --help
             Display usage information and exit.
@@ -50,8 +50,8 @@ OUTPUT FORMAT
             File 2: <N2> lines
 
             Line <n> differs:
-            < line from file1
-            > line from file2
+            < line from FILE1
+            > line from FILE2
 
      Binary Mode Output:
             === BINARY COMPARISON ===
@@ -60,7 +60,7 @@ OUTPUT FORMAT
 
             Offset 0xXXXXXXXX (<decimal>): 0xAA != 0xBB ('A' vs 'B')
 
-     Statistics (if --stats used):
+     Statistics (with --stats):
             === PERFORMANCE STATISTICS ===
             Execution time: X.XXX ms
             File 1 size: N bytes
@@ -72,25 +72,19 @@ OUTPUT FORMAT
 
 EXAMPLES
     Text Mode Comparison:
-        ./filediffadvanced -t test1.txt test2.txt
+        ./angus_chen_filediffadvanced -t test1.txt test2.txt
     
     Binary Mode Comparison:
-        ./filediffadvanced -b binary1.bin binary2.bin
+        ./angus_chen_filediffadvanced -b binary1.bin binary2.bin
     
     Statistics:
-        ./filediffadvanced -b -s binary1.bin binary2.bin
-
+        ./angus_chen_filediffadvanced -b -s binary1.bin binary2.bin
 
 EXIT STATUS
      0   The files are identical.
-
      1   The files differ.
-
-     2   An error occurred. This includes:
-             • invalid arguments
-             • failed file I/O
-             • memory mapping failure
-             • user interruption (SIGINT)
+     2   An error occurred (invalid arguments, file I/O failure,
+         memory mapping failure, or user interruption).
 
 SIGNAL HANDLING
      SIGINT (Ctrl+C)
@@ -100,12 +94,11 @@ IMPLEMENTATION NOTES
      • Uses mmap(2) for efficient file reading when possible.
      • Detects text vs. binary files by sampling first 512 bytes.
      • Prints printable ASCII or ‘.’ for non-printable bytes in binary mode.
-     • Uses getopt_long(3) to parse command-line options.
+     • Uses getopt_long(3) for option parsing.
 
 AUTHOR
-     Angus Chen  
+     Angus Chen
      GitHub: https://github.com/httpsdluc/csc332-group1
 
 SEE ALSO
      diff(1), cmp(1), mmap(2), getopt_long(3)
-
