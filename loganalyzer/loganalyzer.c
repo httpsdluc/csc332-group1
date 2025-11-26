@@ -1,3 +1,5 @@
+//Lina Prroj
+
 // features i used:
 //count total lines in a log file
 //count lines containing a specific keyword (-k)
