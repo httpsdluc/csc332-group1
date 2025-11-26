@@ -1,9 +1,8 @@
 /*
-angus_chen_filediffadvanced.c => provides an advanced diff tool that shows
-textual and binary differences and performance statistics
+filediffadvanced.c => provides an advanced diff tool that shows textual and binary differences and performance statistics
 
-Author: Angus Chen
-CCNY ID: 24509614
+Angus Chen
+24509614
 GitHub: https://github.com/httpsdluc/csc332-group1
 
 Features:
@@ -11,11 +10,10 @@ Features:
     - binary mode: compare byte-by-byte, show differing offsets and values
     - performance statistics: total lines/bytes compared, total differences, elapsed time
 
-Compilation (no Makefile):
-    gcc -Wall -Wextra -std=gnu99 -o angus_chen_filediffadvanced angus_chen_filediffadvanced.c
-
+Compilation:
+    gcc -Wall -Wextra -std=gnu99 -o filediffadvanced filediffadvanced.c
 Usage:
-    ./angus_chen_filediffadvanced [OPTIONS] <file1> <file2>
+    filediffadvanced [options] <file1> <file2>
 
 Options:
     -t, --text     => force text mode comparison
@@ -23,13 +21,12 @@ Options:
     -s, --stats    => show performance statistics
     -o, --output   => write output to file (default: stdout)
     -h, --help     => show help and exit
-
+    
 Exit Codes:
     0 => files are identical
     1 => files differ
     2 => error (invalid arguments, I/O error, etc.)
 */
-
 
 #include <stdio.h>      // printf, fprintf, fopen, fclose, fread, fwrite, perror
 #include <stdlib.h>     // malloc, free, exit, abort
