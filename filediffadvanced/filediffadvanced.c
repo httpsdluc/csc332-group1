@@ -10,6 +10,9 @@ Features:
     - binary mode: compare byte-by-byte, show differing offsets and values
     - performance statistics: total lines/bytes compared, total differences, elapsed time
 
+Compilation:
+    gcc -Wall -Wextra -std=gnu99 -o filediffadvanced filediffadvanced.c
+    
 Usage:
     filediffadvanced [options] <file1> <file2>
 
