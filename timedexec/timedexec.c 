@@ -1,16 +1,25 @@
 /*
- * timedexec.c - Execute a program with resource limits
- * 
- * WHAT THIS DOES:
- * Runs a program and monitors it. Kills it if it exceeds:
- * - Time limit
- * - Memory limit  
- * - CPU limit
- *
- * EXAMPLE USAGE:
- * ./timedexec -t 5 -m 100 ./myprogram arg1 arg2
- * (Run myprogram, kill after 5 seconds or 100MB memory)
- */
+timedexec.c - Execute a program with resource limits
+ 
+Diana Lucero
+Professor Zaid T Al-Mashhadani
+Date: Nov 2025
+
+WHAT THIS DOES:
+Runs a program and monitors it. Kills it if it exceeds:
+- Time limit
+- Memory limit  
+- CPU limit
+
+cd /workspaces/csc332-group1/timedexec
+make clean 
+make
+./timedexec -h
+./timedexec -t 2 sleep 10
+./timedexec -v -t 5 echo "Testing"
+./test_timedexec.sh
+
+*/
 
 #define _POSIX_C_SOURCE 200809L
 #define _DEFAULT_SOURCE
@@ -27,8 +36,7 @@
 #include <errno.h>
 
 /* 
- * STRUCTURE TO HOLD RESOURCE LIMITS
- * Why? Keeps all our limits organized in one place
+ * STRUCTURE TO HOLD RESOURCE LIMITS to Keeps all our limits organized in one place
  */
 typedef struct {
     int time_limit;      // Maximum seconds to run (0 = no limit)
@@ -38,8 +46,7 @@ typedef struct {
 } ResourceLimits;
 
 /*
- * FUNCTION: print_usage
- * WHY: Show user how to use the program
+ * FUNCTION: print_usage shows user how to use the program
  */
 void print_usage(const char *program_name) {
     fprintf(stderr, "Usage: %s [OPTIONS] COMMAND [ARGS...]\n", program_name);
@@ -55,10 +62,7 @@ void print_usage(const char *program_name) {
 }
 
 /*
- * FUNCTION: parse_arguments
- * WHY: Convert command-line flags into our ResourceLimits structure
- * 
- * HOW IT WORKS:
+ * FUNCTION: parse_arguments - Convert command-line flags into our ResourceLimits structure
  * getopt() is a standard library function that parses -t, -m, -c flags
  * Returns the option character each time, stores value in optarg
  */
@@ -73,7 +77,6 @@ int parse_arguments(int argc, char *argv[], ResourceLimits *limits) {
     
     /*
      * getopt() magic:
-     * "t:m:c:vh" means:
      *   t: = option -t requires an argument (the number)
      *   m: = option -m requires an argument
      *   c: = option -c requires an argument
@@ -218,15 +221,12 @@ int get_process_cpu(pid_t pid) {
 }
 
 /*
- * FUNCTION: monitor_process
- * WHY: The heart of timedexec - watches the child process
- * 
- * HOW IT WORKS:
- * 1. Loop every second
- * 2. Check if child is still alive
- * 3. Check if any limits are exceeded
- * 4. If exceeded, kill the child
- * 5. If child exits normally, return its exit status
+ * FUNCTION: monitor_process - The heart of timedexec - watches the child process
+    * 1. Loop every second
+    * 2. Check if child is still alive
+    * 3. Check if any limits are exceeded
+    * 4. If exceeded, kill the child
+    * 5. If child exits normally, return its exit status
  */
 int monitor_process(pid_t child_pid, const ResourceLimits *limits) {
     time_t start_time = time(NULL);
@@ -309,8 +309,7 @@ int monitor_process(pid_t child_pid, const ResourceLimits *limits) {
 }
 
 /*
- * MAIN FUNCTION
- * The entry point - coordinates everything
+ * MAIN FUNCTION - The entry point - coordinates everything
  */
 int main(int argc, char *argv[]) {
     ResourceLimits limits;
