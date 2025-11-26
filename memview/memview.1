@@ -1,0 +1,31 @@
+.TH MEMVIEW 1 "November 2025" "CSC 332" "User Commands"
+.SH NAME
+memview \- display memory usage of a process
+.SH SYNOPSIS
+.B memview
+[\fIOPTIONS\fR] [\fIPID\fR]
+.SH DESCRIPTION
+Displays detailed memory usage information for a process by reading from /proc filesystem.
+.SH OPTIONS
+.TP
+.B \-m, \-\-maps
+Show memory maps
+.TP
+.B \-s, \-\-status
+Show memory statistics
+.TP
+.B \-u, \-\-summary
+Show memory summary (default)
+.TP
+.B \-r, \-\-realtime
+Real-time monitoring mode
+.TP
+.B \-i, \-\-interval N
+Update interval in seconds (default: 1)
+.TP
+.B \-h, \-\-help
+Display help message
+.SH AUTHOR
+Arsenii Chan
+.SH SEE ALSO
+ps(1), top(1), free(1)
